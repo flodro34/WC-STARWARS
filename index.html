@@ -8,11 +8,19 @@
     <title>Web comp</title>
 </head>
 <body>
-    <h1>Quelques personnages de Star Wars</h1>
+    <h1>L'univers de Star Wars</h1>
 
     <h2> Ici , c'est le coté clair de la Force !</h2>
-    <div id="cardContainer">
-    </div>
+    <!-- <select name="select" id="select">
+        <option value="" id="optionUser">Personnages</option>
+        <option value="" id="optionPlanet">Planètes</option>
+    </select> -->
+
+    <button id="optionUser">Personnages</button>
+    <button id="optionPlanet">Planètes</button>
+
+    <div id="persoContainer"></div>    
+    <div id="planetContainer"></div>
    
     <!-- <user-card 
     first-name="Ben" 
@@ -24,10 +32,11 @@
 <script>
 
     let perso = [];
+    let planet = [];
     
     function displayPersos(persoList) {
         //console.log(persoList);
-        let ul = document.createElement('ul');
+        //let ul = document.createElement('ul');
         
         // for(let i=0; i < 10; i++) {
         //     const card = document.querySelector('#card');
@@ -38,7 +47,8 @@
 
         //     li.innerHTML = persoList[i].name;
         // }
-        const cardContainer = document.querySelector('#cardContainer');
+        const persoContainer = document.querySelector('#persoContainer');
+        const planetContainer = document.querySelector('#planetContainer');
         // persoList.forEach(perso => {
         //     let li = document.createElement('li');
         //     cardContainer.appendChild(ul);
@@ -54,26 +64,69 @@
             userCard.setAttribute('mass', perso.mass);
             userCard.setAttribute('birthYear', perso.birth_year);
             
-            cardContainer.appendChild(userCard);
+            persoContainer.appendChild(userCard);
         });
 
     };
 
-    fetch ("https://swapi.dev/api/people/")
-    .then(res => res.json())
-    .then(res => {
-        persoList = res.results;
-        //console.log(persoList);
-        //console.log(res);
-        //console.log(perso.name);
-        displayPersos(persoList);
-    });
+    function displayPlanets(planetList) {
+        planetList.forEach(planet => {
+            let planetCard = document.createElement('planet-card');
+
+            planetCard.setAttribute('name', planet.name);
+            planetCard.setAttribute('rotationPeriod', planet.rotation_period);
+            planetCard.setAttribute('orbitalPeriod', planet.orbital_period);
+            planetCard.setAttribute('diameter', planet.diameter);
+
+            planetContainer.appendChild(planetCard);
+        })
+    }
+
+    
+    
         
     
-    
+
+    document.getElementById("optionUser").addEventListener("click",function(){
+        console.log('perso');
+        
+            fetch ("https://swapi.dev/api/people/")
+            .then(res => res.json())
+            .then(res => {
+                persoList = res.results;
+                //console.log(persoList);
+                //console.log(res);
+                //console.log(perso.name);
+                displayPersos(persoList);
+                })
+            .catch(
+            function(err){
+                console.log (err.message)   //err est un objet global
+            }
+            )
+        
+
+    })
+
+    document.getElementById("optionPlanet").addEventListener('click',function(e){
+        console.log('planete');
+        fetch ("https://swapi.dev/api/planets/")
+        .then(res => res.json())
+        .then(res => {
+            planetList = res.results;
+            //console.log(res.results);
+            displayPlanets(planetList);
+            })
+        .catch(
+        function(err){
+            console.log (err.message)   //err est un objet global
+        }
+        )
+    })
 
 
 </script>    
 <script src="user-card-component.js"></script>
+<script src="planet-card-component.js"></script>
 </body>
 </html>
